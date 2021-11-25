@@ -1,39 +1,42 @@
 import { ChatPage } from "./pages/chat/Chat";
 import { io } from 'socket.io-client';
 // import openSocket from 'socket.io-client';
-import NodeRSA from 'encrypt-rsa';
+// import NodeRSA from 'encrypt-rsa';
+import NodeRSA from 'node-rsa';
 
 import { constants } from './constants/constants';
 import { Messages } from "./pages/msg/Messages";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "./hooks/useForm";
-import fs from 'fs';
 
 export const  App = () => {
-
-  const nodeRSA = new NodeRSA();
+  // const nodeRSA = new NodeRSA();
   const [show, setShow] = useState(false)
   const [values, handleInputChange, reset] = useForm({ name: '', room: ''});
   const {name, room} = values;
-  // const socket = openSocket(constants.socketURL, {transports: ['websocket']});
-  const socket = io(constants.socketURL);
-  console.log(socket);
-
+  
+  const [socket, setSocket] = useState(null);
+  
+  useEffect(() => {
+    const newSocket = io(constants.socketURL);
+    setSocket(newSocket);
+    return () => newSocket.close();
+  }, [setSocket]);
+  
   const generateRSAKeys = (username) => {
-    const { privateKey, publicKey } = nodeRSA.createPrivateAndPublicKeys();
-
-    // Save the keys locally
-
-    fs.writeFileSync(`./__rsa-keys__/private-key-${username}`, privateKey);
-    fs.writeFileSync(`./__rsa-keys__/public-key-${username}`, publicKey);
-
+    // const { privateKey, publicKey } = nodeRSA.createPrivateAndPublicKeys();
+    const key = new NodeRSA({b: 512});
+    const publicKey = key.exportKey('public')
+    const privateKey = key.exportKey('private')
+    console.log(publicKey)
+    console.log(privateKey)
     return publicKey;
   };
-
+  
   const startConnection = (e) => {
     e.preventDefault()
     const pubkey = generateRSAKeys(name);
-    console.log(pubkey);
+    // console.log(pubkey);
     reset()
     setShow(true)
   }

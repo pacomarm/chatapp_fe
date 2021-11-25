@@ -6,6 +6,8 @@ import { useForm } from '../../hooks/useForm';
 import '../../index.css'
 
 export const ChatPage = ({socket}) => {
+
+    console.log(socket);
     
     const [values, handleInputChange, reset] = useForm({ message: '' });
     const {message} = values;

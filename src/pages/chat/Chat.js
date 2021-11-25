@@ -16,7 +16,7 @@ export const ChatPage = () => {
         socket.on('chat message', function(msg) {
             setMessages([...messages, msg])
         });
-    } )
+    }, [])
 
     const sendMessage = (e) => {
         e.preventDefault()

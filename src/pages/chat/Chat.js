@@ -28,8 +28,6 @@ export const ChatPage = ({socket}) => {
                         className="form-control"
                     />
                     <button className="btn btn-success bts" onClick={sendMessage} > <FontAwesomeIcon icon={faShare} /> </button>
-                    {/* <div className="m-3" style={{display:'flex', justifyContent: 'center'}}>
-                    </div> */}
                 </div>
             </form>
         </>

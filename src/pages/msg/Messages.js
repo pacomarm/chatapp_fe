@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react'
+import '../../index.css';
 
 export const Messages = ({ socket }) => {
 
@@ -16,13 +17,15 @@ export const Messages = ({ socket }) => {
 
     return (
         <>
-            <ul id="messages">
-                {
-                    messages.map( (e) =>
-                        <li key={e}>{e}</li>
-                    )
-                }
-            </ul> 
+            <div className="msg">
+                <ul id="messages">
+                    {
+                        messages.map( (e) =>
+                            <li key={e}>{e}</li>
+                        )
+                    }
+                </ul> 
+            </div>
         </>
     )
 }

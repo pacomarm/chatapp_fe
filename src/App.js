@@ -2,6 +2,7 @@ import { ChatPage } from "./pages/chat/Chat";
 import { io } from 'socket.io-client';
 // import NodeRSA from 'node-rsa';
 import QuickEncrypt from 'quick-encrypt'
+import { useToasts } from 'react-toast-notifications';
 
 import { constants } from './constants/constants';
 import { Messages } from "./pages/msg/Messages";
@@ -9,6 +10,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "./hooks/useForm";
 
 export const  App = () => {
+  const { addToast } = useToasts();
   const [show, setShow] = useState(false)
   const [values, handleInputChange, ] = useForm({ name: '', room: ''});
   const {name, room} = values;
@@ -16,8 +18,8 @@ export const  App = () => {
   const [socket, setSocket] = useState(null);
   
   useEffect(() => {
-    // const newSocket = io(constants.socketURL);
-    const newSocket = io(constants.socketPRD, { rejectUnauthorized: false });
+    const newSocket = io(constants.socketURL);
+    // const newSocket = io(constants.socketPRD, { rejectUnauthorized: false });
     setSocket(newSocket);
     return () => newSocket.close();
   }, [setSocket]);
@@ -58,22 +60,26 @@ export const  App = () => {
   
   const startConnection = (e) => {
     e.preventDefault()
-    console.log(name)
-    const pubkey = generateRSAKeys(name);
-    if(pubkey){
-      // console.log(name)
-      socket.emit('joinRoom', { username: name, roomname: room, pubkey: pubkey });
-      welcome();
-      newUser();
-      storePubKeys(pubkey, name);
+    if(name&&room&&name!=''&&room!=''){
+      const pubkey = generateRSAKeys(name);
+      if(pubkey){
+        // console.log(name)
+        socket.emit('joinRoom', { username: name, roomname: room, pubkey: pubkey });
+        welcome();
+        newUser();
+        storePubKeys(pubkey, name);
+        addToast('Connected Successfully', { appearance: 'success' });
+        setShow(true)
+      }
+    } else{
+      addToast('Invalid Credentials', { appearance: 'error' });
     }
-    setShow(true)
   }
   
 
   return (
     <>
-      <div className="mt-3" style={{display:'flex', justifyContent: 'center'}}>
+      <div style={{display:'flex', justifyContent: 'center'}}>
         <h1>WhatsUp</h1>
       </div>
       {
@@ -81,11 +87,11 @@ export const  App = () => {
           <>
             <form id="form" className="m-3">
                 <div className="mb-3">
-                  <label className="form-label">Name</label>
+                  <label className="form-label"><strong>Name</strong></label>
                   <input className="form-control" value={name} name="name" autoComplete="off" onChange={handleInputChange}/>
                 </div>
                 <div className="mb-3">
-                  <label className="form-label">Room</label>
+                  <label className="form-label"><strong>Room</strong></label>
                   <input className="form-control" value={room} name="room" autoComplete="off" onChange={handleInputChange}/>
                 </div>
                 <div style={{display:'flex', justifyContent: 'center'}}>

@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import NodeRSA from 'node-rsa';
+import { useToasts } from 'react-toast-notifications';
+
 import '../../index.css';
 
 export const Messages = ({ socket }) => {
-
+    const { addToast } = useToasts();
     const [messages, setMessages] = useState([])
 
     const addMessage = useCallback( (msg) => {
@@ -21,9 +23,9 @@ export const Messages = ({ socket }) => {
     
     useEffect( () => {
         socket.on('chat:message', (message) => {
-            console.log('cayó mensaje', message);
             const decryptedMessage = decryptMessage(message.text.encrypted);
-            addMessage(decryptedMessage)
+            addMessage({user: message.username, msg: decryptedMessage})
+            addToast(`${message.username}: ${decryptedMessage}`, { appearance: 'success'});
             console.log(`${message.username}: ${decryptedMessage} `);
         });
         // socket.on('chat message', function(msg) {
@@ -34,13 +36,20 @@ export const Messages = ({ socket }) => {
     return (
         <>
             <div className="msg">
-                <ul id="messages">
-                    {
-                        messages.map( (e) =>
-                            <li key={e}>{e}</li>
-                        )
-                    }
-                </ul> 
+                <div className="area">
+                    <div id="messages">
+                        {
+                            messages.map( (e) =>
+                                <div className="bn" key={e}>
+                                    <div className="content">
+                                        <label className="usr"> <strong>{e.user}</strong> </label>
+                                        <label> {e.msg} </label>
+                                    </div>
+                                </div>
+                            )
+                        }
+                    </div> 
+                </div>
             </div>
         </>
     )

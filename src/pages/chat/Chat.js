@@ -9,7 +9,7 @@ import '../../index.css'
 
 export const ChatPage = ({socket}) => {
     
-    const [values, handleInputChange, ] = useForm({ message: '' });
+    const [values, handleInputChange, reset] = useForm({ message: '' });
     const {message} = values;
 
     const encryptMessage = (msg) => {
@@ -32,6 +32,7 @@ export const ChatPage = ({socket}) => {
             // reset()
             const encrypted = encryptMessage(message)
             socket.emit('chat', { encrypted });
+            reset()
         }
     }
 

@@ -24,14 +24,14 @@ export const Messages = ({ socket }) => {
     useEffect( () => {
         socket.on('chat:message', (message) => {
             const decryptedMessage = decryptMessage(message.text.encrypted);
-            addMessage({user: message.username, msg: decryptedMessage})
+            addMessage({user: message.username, msg: decryptedMessage, id: new Date()})
             addToast(`${message.username}: ${decryptedMessage}`, { appearance: 'success'});
             console.log(`${message.username}: ${decryptedMessage} `);
         });
         // socket.on('chat message', function(msg) {
         //     addMessage(msg)
         // });
-    }, [addMessage, socket])
+    }, [addMessage, socket, addToast])
 
     return (
         <>
@@ -40,7 +40,7 @@ export const Messages = ({ socket }) => {
                     <div id="messages">
                         {
                             messages.map( (e) =>
-                                <div className="bn" key={e}>
+                                <div className="bn" key={e.id}>
                                     <div className="content">
                                         <label className="usr"> <strong>{e.user}</strong> </label>
                                         <label> {e.msg} </label>

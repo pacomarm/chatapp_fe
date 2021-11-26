@@ -60,7 +60,7 @@ export const  App = () => {
   
   const startConnection = (e) => {
     e.preventDefault()
-    if(name&&room&&name!=''&&room!=''){
+    if(name&&room&&name!==''&&room!==''){
       const pubkey = generateRSAKeys(name);
       if(pubkey){
         // console.log(name)

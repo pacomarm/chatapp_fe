@@ -16,7 +16,8 @@ export const  App = () => {
   const [socket, setSocket] = useState(null);
   
   useEffect(() => {
-    const newSocket = io(constants.socketURL);
+    // const newSocket = io(constants.socketURL);
+    const newSocket = io(constants.socketPRD, { rejectUnauthorized: false });
     setSocket(newSocket);
     return () => newSocket.close();
   }, [setSocket]);

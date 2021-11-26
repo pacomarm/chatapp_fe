@@ -44,7 +44,8 @@ export const  App = () => {
 
   const newUser = () => {
     socket.on('joinRoom:newUser', (message) => {
-      console.log(message.text);
+      // console.log(message.text);
+      addToast(message.text, { appearance: 'success' });
     });
   };
 

@@ -1,7 +1,5 @@
 import { ChatPage } from "./pages/chat/Chat";
 import { io } from 'socket.io-client';
-// import openSocket from 'socket.io-client';
-// import NodeRSA from 'encrypt-rsa';
 import NodeRSA from 'node-rsa';
 
 import { constants } from './constants/constants';
@@ -10,9 +8,8 @@ import { useEffect, useState } from "react";
 import { useForm } from "./hooks/useForm";
 
 export const  App = () => {
-  // const nodeRSA = new NodeRSA();
   const [show, setShow] = useState(false)
-  const [values, handleInputChange, reset] = useForm({ name: '', room: ''});
+  const [values, handleInputChange, ] = useForm({ name: '', room: ''});
   const {name, room} = values;
   
   const [socket, setSocket] = useState(null);
@@ -24,20 +21,50 @@ export const  App = () => {
   }, [setSocket]);
   
   const generateRSAKeys = (username) => {
-    // const { privateKey, publicKey } = nodeRSA.createPrivateAndPublicKeys();
     const key = new NodeRSA({b: 512});
     const publicKey = key.exportKey('public')
     const privateKey = key.exportKey('private')
-    console.log(publicKey)
-    console.log(privateKey)
+    localStorage.setItem('mypub', JSON.stringify(publicKey))
+    localStorage.setItem('myprv', JSON.stringify(privateKey))
     return publicKey;
+  };
+
+  const welcome = () => {
+    socket.on('joinRoom:welcome', (message) => {
+      console.log(message)
+      console.log(message.text);
+    });
+  };
+
+  const newUser = () => {
+    socket.on('joinRoom:newUser', (message) => {
+      console.log(message.text);
+    });
+  };
+
+  const storePubKeys = (pubkey, username) => {
+    socket.on('joinRoom:shareKeys', (keys) => {
+      console.log('keys',keys)
+      keys.forEach((key) => {
+        let tmpKey = key.toString();
+        if (tmpKey !== pubkey.toString()) {
+          localStorage.setItem('zpub', JSON.stringify(key))
+        }
+      });
+    });
   };
   
   const startConnection = (e) => {
     e.preventDefault()
+    console.log(name)
     const pubkey = generateRSAKeys(name);
-    // console.log(pubkey);
-    reset()
+    if(pubkey){
+      console.log(name)
+      socket.emit('joinRoom', { username: name, roomname: room, pubkey: pubkey });
+      welcome();
+      newUser();
+      storePubKeys(pubkey, name);
+    }
     setShow(true)
   }
   

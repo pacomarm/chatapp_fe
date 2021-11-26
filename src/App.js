@@ -1,6 +1,7 @@
 import { ChatPage } from "./pages/chat/Chat";
 import { io } from 'socket.io-client';
 import NodeRSA from 'node-rsa';
+import QuickEncrypt from 'quick-encrypt'
 
 import { constants } from './constants/constants';
 import { Messages } from "./pages/msg/Messages";
@@ -21,11 +22,19 @@ export const  App = () => {
   }, [setSocket]);
   
   const generateRSAKeys = (username) => {
-    const key = new NodeRSA({b: 512});
-    const publicKey = key.exportKey('public')
-    const privateKey = key.exportKey('private')
-    localStorage.setItem('mypub', JSON.stringify(publicKey))
-    localStorage.setItem('myprv', JSON.stringify(privateKey))
+    const key2 = new NodeRSA({b: 512});
+    const publicKey2 = key2.exportKey('public')
+    const privateKey2 = key2.exportKey('private')
+    console.log(publicKey2, typeof(publicKey2));
+    console.log(privateKey2);
+    
+    let key = QuickEncrypt.generate(2048)
+    const publicKey  = key.public
+    const privateKey = key.private
+    console.log(publicKey, typeof(publicKey));
+    console.log(privateKey);
+    localStorage.setItem('mypub', publicKey)
+    localStorage.setItem('myprv', privateKey)
     return publicKey;
   };
 
@@ -48,7 +57,7 @@ export const  App = () => {
       keys.forEach((key) => {
         let tmpKey = key.toString();
         if (tmpKey !== pubkey.toString()) {
-          localStorage.setItem('zpub', JSON.stringify(key))
+          localStorage.setItem('zpub', key)
         }
       });
     });

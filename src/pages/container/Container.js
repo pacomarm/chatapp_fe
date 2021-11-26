@@ -83,7 +83,7 @@ export const Container = ({socket}) => {
                             messages.map( (e) =>
                                 <div className="bn" key={e.id}>
                                     <div className="content">
-                                        <label className={`${user==e.user ? 'usr' : 'other' }`}> <strong>{user==e.user ? 'You' : e.user}</strong> </label>
+                                        <label className={`${user===e.user ? 'usr' : 'other' }`}> <strong>{user===e.user ? 'You' : e.user}</strong> </label>
                                         <label> {e.msg} </label>
                                     </div>
                                 </div>

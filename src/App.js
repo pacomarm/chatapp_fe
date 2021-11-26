@@ -1,6 +1,6 @@
 import { ChatPage } from "./pages/chat/Chat";
 import { io } from 'socket.io-client';
-import NodeRSA from 'node-rsa';
+// import NodeRSA from 'node-rsa';
 import QuickEncrypt from 'quick-encrypt'
 
 import { constants } from './constants/constants';
@@ -22,17 +22,10 @@ export const  App = () => {
   }, [setSocket]);
   
   const generateRSAKeys = (username) => {
-    const key2 = new NodeRSA({b: 512});
-    const publicKey2 = key2.exportKey('public')
-    const privateKey2 = key2.exportKey('private')
-    console.log(publicKey2, typeof(publicKey2));
-    console.log(privateKey2);
     
     let key = QuickEncrypt.generate(2048)
     const publicKey  = key.public
     const privateKey = key.private
-    console.log(publicKey, typeof(publicKey));
-    console.log(privateKey);
     localStorage.setItem('mypub', publicKey)
     localStorage.setItem('myprv', privateKey)
     return publicKey;
@@ -41,7 +34,7 @@ export const  App = () => {
   const welcome = () => {
     socket.on('joinRoom:welcome', (message) => {
       console.log(message)
-      console.log(message.text);
+      // console.log(message.text);
     });
   };
 
@@ -53,7 +46,6 @@ export const  App = () => {
 
   const storePubKeys = (pubkey, username) => {
     socket.on('joinRoom:shareKeys', (keys) => {
-      console.log('keys',keys)
       keys.forEach((key) => {
         let tmpKey = key.toString();
         if (tmpKey !== pubkey.toString()) {
@@ -68,7 +60,7 @@ export const  App = () => {
     console.log(name)
     const pubkey = generateRSAKeys(name);
     if(pubkey){
-      console.log(name)
+      // console.log(name)
       socket.emit('joinRoom', { username: name, roomname: room, pubkey: pubkey });
       welcome();
       newUser();

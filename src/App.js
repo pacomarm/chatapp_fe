@@ -8,6 +8,7 @@ import { constants } from './constants/constants';
 import { Messages } from "./pages/msg/Messages";
 import { useEffect, useState } from "react";
 import { useForm } from "./hooks/useForm";
+import { Container } from "./pages/container/Container";
 
 export const  App = () => {
   const { addToast } = useToasts();
@@ -37,7 +38,7 @@ export const  App = () => {
   const welcome = () => {
     socket.on('joinRoom:welcome', (message) => {
       console.log(message)
-      localStorage.setItem('userID', message.userID)
+      localStorage.setItem('user', message.username)
     });
   };
 
@@ -104,8 +105,9 @@ export const  App = () => {
       {
         show && (
           <>
-            <Messages socket={socket}/>
-            <ChatPage socket={socket}/>
+            {/* <Messages socket={socket}/>
+            <ChatPage socket={socket}/> */}
+            <Container socket={socket}></Container>
           </>
         )
       }

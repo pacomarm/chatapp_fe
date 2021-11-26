@@ -12,18 +12,22 @@ export const Messages = ({ socket }) => {
         setMessages( messages => [...messages, msg])
     }, [setMessages]);
 
-    const decryptMessage = (message) => {
+    const decryptMessage = (message, user) => {
         const myprv = localStorage.getItem('myprv');
+        // const userID = localStorage.getItem('userID');
         if(myprv){
-            const key = new NodeRSA();
-            key.importKey(myprv, 'pkcs1-private-pem');
-            return key.decrypt(message, 'utf8');
+            // if(myprv){
+                const key = new NodeRSA();
+                key.importKey(myprv, 'pkcs1-private-pem');
+                return key.decrypt(message, 'utf8');
+            // }
         }
     };
     
     useEffect( () => {
         socket.on('chat:message', (message) => {
-            const decryptedMessage = decryptMessage(message.text.encrypted);
+            console.log(message)
+            const decryptedMessage = decryptMessage(message.text.encrypted, message.userID);
             addMessage({user: message.username, msg: decryptedMessage, id: new Date()})
             addToast(`${message.username}: ${decryptedMessage}`, { appearance: 'success'});
             console.log(`${message.username}: ${decryptedMessage} `);

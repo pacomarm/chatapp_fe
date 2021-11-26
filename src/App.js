@@ -18,8 +18,8 @@ export const  App = () => {
   const [socket, setSocket] = useState(null);
   
   useEffect(() => {
-    const newSocket = io(constants.socketURL);
-    // const newSocket = io(constants.socketPRD, { rejectUnauthorized: false });
+    // const newSocket = io(constants.socketURL);
+    const newSocket = io('/', { rejectUnauthorized: false });
     setSocket(newSocket);
     return () => newSocket.close();
   }, [setSocket]);
@@ -37,7 +37,7 @@ export const  App = () => {
   const welcome = () => {
     socket.on('joinRoom:welcome', (message) => {
       console.log(message)
-      // console.log(message.text);
+      localStorage.setItem('userID', message.userID)
     });
   };
 

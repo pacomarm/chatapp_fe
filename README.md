@@ -1,6 +1,6 @@
 # Great-Value Mini WhatsApp
 
-Messages are end-to-end encryption using RSA
+End-to-end encryption using RSA
 
 This is just the front-end.
 
